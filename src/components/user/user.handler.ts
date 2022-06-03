@@ -60,7 +60,7 @@ const authentication = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-const user_store = (app: any) => {
+const user_store = (app: Application) => {
     app.get("/users", userToken, index);
     app.get("/users/:id", userToken, show);
     app.post("/users", create);
