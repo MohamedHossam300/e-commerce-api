@@ -73,7 +73,7 @@ export class UserStore {
 
   async authentication(email: string, password: string): Promise<User | null> {
     try {
-      const result = await users.findOne(email).exec()
+      const result = await users.findOne({email}).exec()
       if (result) {
         if (compareSync(password + config.pepper, result.password)) {
           return result;

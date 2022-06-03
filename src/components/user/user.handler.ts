@@ -1,7 +1,9 @@
 import { Application, Request, Response } from "express";
-import { hashSync, compareSync, genSalt } from "bcrypt";
+import { hashSync, genSalt } from "bcrypt";
+import { sign } from "jsonwebtoken";
 import { UserStore, User } from "./user.modle";
 import { config } from "../../config";
+import userToken from "../../middlewares/userToken";
 
 const store = new UserStore();
 
@@ -37,7 +39,11 @@ const create = async (req: Request, res: Response): Promise<void> => {
             password: hash,
         }
         const createUsers = await store.create(users);
-        res.json(createUsers);
+        const token = sign(
+            { users: createUsers },
+            <string>config.tokenSecret
+        );
+        res.json(token);
     } catch (err) {
         res.status(400)
         res.json(err)
@@ -54,11 +60,11 @@ const authentication = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-const user_store = (app: Application) => {
-    app.get("/users", index);
-    app.get("/users/:id", show);
+const user_store = (app: any) => {
+    app.get("/users", userToken, index);
+    app.get("/users/:id", userToken, show);
     app.post("/users", create);
-    app.post("/authentication", authentication);
+    app.post("/auth", authentication);
 }
 
 export default user_store;

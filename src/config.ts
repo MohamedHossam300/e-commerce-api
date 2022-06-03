@@ -7,4 +7,5 @@ export const config = {
     saltRounds: <string>process.env.SALT_ROUNDS,
     pepper: process.env.PEPPER,
     bcryptPasswors: process.env.BCRYPT_PASSWORD,
+    tokenSecret: process.env.TOKEN_SECRET,
 };
