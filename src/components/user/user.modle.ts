@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import {compareSync } from "bcrypt";
+import { config } from "../../config";
 
 export type User = {
   id?: Number;
@@ -69,8 +71,17 @@ export class UserStore {
     }
   }
 
-  async authentication(email: any): Promise<User> {
-    const user = await users.findOne(email).exec()
-
+  async authentication(email: string, password: string): Promise<User | null> {
+    try {
+      const result = await users.findOne(email).exec()
+      if (result) {
+        if (compareSync(password + config.pepper, result.password)) {
+          return result;
+        }
+      }
+      return null
+    }catch (err) {
+      throw new Error(`Invalid email or password`)
+    }
   }
 }

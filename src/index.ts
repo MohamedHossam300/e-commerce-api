@@ -1,11 +1,11 @@
-import express, { Request, Response, json } from 'express';
+import express, { Request, Response, json, Application } from 'express';
 import mongoose from "mongoose";
 import { config } from './config';
 import ProductRoutes from './components/product/product.handler'
 import user_store from './components/user/user.handler';
 import OrderRoutes from './components/order/order.handler';
 
-const app = express();
+const app: Application = express();
 const port: number = 8080
 
 // Connecting to MongoDB

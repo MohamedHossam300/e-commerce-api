@@ -44,10 +44,21 @@ const create = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
+const authentication = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const createUsers = await store.authentication(req.body.email, req.body.password);
+        res.json(createUsers);
+    } catch (err) {
+        res.status(400)
+        res.json(err)
+    }
+}
+
 const user_store = (app: Application) => {
     app.get("/users", index);
     app.get("/users/:id", show);
     app.post("/users", create);
+    app.post("/authentication", authentication);
 }
 
 export default user_store;
