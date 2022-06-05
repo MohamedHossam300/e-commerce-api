@@ -14,11 +14,13 @@ const orderSchema = new Schema({
     required: true,
   },
   user_id: {
-    type: Number,
+    type: Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   product_id: {
-    type: Number,
+    type: Schema.Types.ObjectId,
+    ref: 'Product',
     required: true,
   },
   quantity: {

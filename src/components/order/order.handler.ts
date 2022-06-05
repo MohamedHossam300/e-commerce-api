@@ -43,7 +43,7 @@ const createNewOrder = async (req: Request, res: Response) => {
         res.json(theNewOrder)
     } catch (err) {
         res.status(400)
-        res.json(err)
+        console.log(err)
     }
 }
 
