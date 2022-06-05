@@ -6,7 +6,6 @@ export type User = {
   id?: Number;
   firstname: string;
   lastname: string;
-  username: string;
   email: string;
   password: string;
 }
@@ -18,11 +17,6 @@ const userSchema = new mongoose.Schema({
     trim: true
   },
   lastname: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  username: {
     type: String,
     required: true,
     trim: true
@@ -48,16 +42,16 @@ export class UserStore {
       const result = await users.find({})
       return result;
     } catch (err) {
-      throw new Error(`Unable to index Users. Error: ${err}`)
+      throw new Error(`Unable to display Users. Error: ${err}`)
     }
   }
 
-  async show(id: string): Promise<User> {
+  async show(email: string): Promise<User> {
     try {
-      const result = await users.findById(id)
+      const result = await users.findOne().where({email:email})
       return result;
     } catch (err) {
-      throw new Error(`Unable to Show Users. Error: ${err}`)
+      throw new Error(`Unable to display User. Error: ${err}`)
     }
   }
 
@@ -67,13 +61,13 @@ export class UserStore {
       const result = await createUsers.save()
       return result;
     } catch (err) {
-      throw new Error(`Unable to index Users. Error: ${err}`)
+      throw new Error(`Unable create Users. Error: ${err}`)
     }
   }
 
   async authentication(email: string, password: string): Promise<User | null> {
     try {
-      const result = await users.findOne(email).exec()
+      const result = await users.findOne({email}).exec()
       if (result) {
         if (compareSync(password + config.pepper, result.password)) {
           return result;

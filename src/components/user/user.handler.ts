@@ -17,7 +17,7 @@ const index = async (_req: Request, res: Response): Promise<void> => {
 
 const show = async (req: Request, res: Response): Promise<void> => {
     try {
-        const showUser = await store.show(req.params.id);
+        const showUser = await store.show(req.params.email);
         res.json(showUser);
     } catch (err) {
         res.status(400)
@@ -32,7 +32,6 @@ const create = async (req: Request, res: Response): Promise<void> => {
         const users: User = {
             firstname: req.body.firstname,
             lastname: req.body.lastname,
-            username: req.body.username,
             email: req.body.email,
             password: hash,
         }
@@ -54,11 +53,11 @@ const authentication = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-const user_store = (app: Application) => {
-    app.get("/users", index);
-    app.get("/users/:id", show);
-    app.post("/users", create);
+const user_routes = (app: Application) => {
+    app.get("/user", index);
+    app.get("/user/:email", show);
+    app.post("/user", create);
     app.post("/authentication", authentication);
 }
 
-export default user_store;
+export default user_routes;

@@ -16,6 +16,9 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 { 
     "name": "product",
+    "desc": "ll",
+    "color":"red",
+    "size":"l2",
     "price": 200,
     "category": "phone" 
 }
@@ -32,12 +35,11 @@ These are the notes from a meeting with the frontend developer that describe wha
 * Create new user (token required): [POST] '/users/new'
 
 {
-    "username": "sarah22",
-    "firstName": "sarah",
-    "lastName": "hassan",
-    "password": "12345",
+    "firstname": "sarah",
+    "lastname": "hassan",
+    "email":"sara@11",
+    "password": "12345"
 }
-
 * Auth user (token required): [POST] '/users/signin'
 {
     "username": "sarah22",
