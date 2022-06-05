@@ -1,77 +1,94 @@
-import {Database} from "../../database"
+import mongoose from "mongoose";
 
 export interface Product {
   id?: number
   name: string
+  desc: string
+  color: string
+  size : string
   price: number
   category: string
+
 }
+const productSchema = new mongoose.Schema({
+    name: {
+    type: String,
+    required: true,
+    trim: true,
+    unique: true
+  },
+  desc: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  price: {
+    type: Number,
+    required: true,
+    trim: true
+  },
+  size: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  category: {
+    type: String,
+    required: true,
+    trim: true
+  },
+})
+
+const products = mongoose.model("Product", productSchema)
+
 
 export class TheProductStore {
 
   // index method
+  
   async index(): Promise<Product[]> {
     try {
-    
-      const conn = await Database.connect()
-      const sql = 'SELECT * FROM Products'
-
-      const result = await conn.query(sql)
-
-      conn.release()
-
-      return result.rows 
+      const result = await products.find({})
+      return result
     } catch (err) {
-      throw new Error(`Cannot display the products. Error: ${err}`)
+      throw new Error(`Unable to display Products. Error: ${err}`)
     }
   }
 
 
 //show method
-  async show(id: string): Promise<Product> {
+  async show(name: string): Promise<Product> {
+      try {
+        const result = await products.findOne().where({name: name})
+       return result;
+      } catch (err) {
+        throw new Error(`Unable to display Product. Error: ${err}`)
+      }
+    }
+  //creat method
+  async create(product: Product): Promise<Product> {
     try {
-    const sql = 'SELECT * FROM Products WHERE id=($1)'
-    const conn = await Database.connect()
-
-    const result = await conn.query(sql, [id])
-
-    conn.release()
-    return result.rows[0]
+      const createProdcut = new products(product)
+      const result = await createProdcut.save()
+      return result;
     } catch (err) {
-        throw new Error(`Cannot find product ${id}. Error: ${err}`)
+      throw new Error(`Unable to creat Product. Error: ${err}`)
     }
   }
 
 
-  //creat method
-
-  async create(p: Product): Promise<Product> {
-      try {
-    const sql = 'INSERT INTO Products (name, price , category) VALUES($1, $2, $3) RETURNING *'
-    const conn = await Database.connect()
-
-    const result = await conn.query(sql, [p.name , p.price , p.category])
-    conn.release()
-    return result.rows[0]
-  
-      } catch (err) {
-          throw new Error(`Cannot add new product. Error: ${err}`)
-      }
-  }
-
-
   //delete method
-  async delete(id: string): Promise<Product> {
+  async delete(name: string): Promise<Product> {
     try {
-
-        const sql = 'DELETE FROM Products WHERE id=($1)';
-        const conn = await Database.connect();
-        const result = await conn.query(sql, [id]);
-        conn.release();
+      const result = await products.findOneAndDelete({name :name})
+      //.where({name: name})
       return result.rows[0]
     } catch (err) {
         throw new Error(`unable to delete this product. Error: ${err}`);
     
     }
   }
+
+ 
+  
 }

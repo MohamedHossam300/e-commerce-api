@@ -1,6 +1,7 @@
-import express, {Request ,Response} from 'express'
+import express, {Application,Request ,Response} from 'express'
 import {Router} from 'express'
-import userToken from '../../middlewares/userToken'
+import { config } from "../../config";
+//import userToken from '../../middlewares/userToken'
 import UserRoutes from '../user/user.handler'
 import {Product,TheProductStore} from './product.modle'
 
@@ -10,7 +11,7 @@ const store = new TheProductStore()
 
 //get all products handler function
 
-const getAllProducts = async (_req: Request, res: Response) => {
+const getAllProducts= async (_req: Request, res: Response) => {
     try {
         const products = await store.index()
             res.json(products)
@@ -24,8 +25,8 @@ const getAllProducts = async (_req: Request, res: Response) => {
 
 const getProduct = async (req: Request, res: Response) => {
     try {
-        const id=req.params.id
-       const product = await store.show(id)
+        const name=req.params.name
+       const product = await store.show(name)
        res.json(product)
     } catch(err) { 
          res.status(400)
@@ -37,13 +38,17 @@ const getProduct = async (req: Request, res: Response) => {
 // creat new product handler function
 const createNewProduct = async (req: Request, res: Response) => {
     try {
-        const p: Product = {
+        const product: Product = {
             name: req.body.name,
+            desc : req.body.desc,
+            color: req.body.color,
+            size : req.body.size,
             price: req.body.price,
             category:req.body.category
+
         }
 
-        const theNewProduct  = await store.create(p)
+        const theNewProduct  = await store.create(product)
         res.json(theNewProduct)
     } catch(err) {
         res.status(400)
@@ -54,8 +59,8 @@ const createNewProduct = async (req: Request, res: Response) => {
  //delete product by id handler function
  const deleteProduct = async (req: Request, res: Response) => {
         try {
-            const id = req.params.id
-            const product = await store.delete(id);
+            const name = req.params.name
+            const product = await store.delete(name);
             res.json(product);
         } catch(err) { 
             res.status(400)
@@ -67,12 +72,18 @@ const createNewProduct = async (req: Request, res: Response) => {
 
     //product routes
 
- const ProductRoutes = Router()
+    const product_routes = (app: Application) => { 
+        
+    app.get('/product', getAllProducts)
+    app.get('/product/:name', getProduct)
+    app.post('/product', createNewProduct)
+    app.delete('/product/:name', deleteProduct)
+
+    
+       
+    }
+    
+    export default product_routes;
 
 
-  ProductRoutes.get('/', getAllProducts)
-  ProductRoutes.get('/:id', getProduct)
-  ProductRoutes.post('/new',userToken, createNewProduct)
-  ProductRoutes.delete('/:id' ,userToken, deleteProduct)
 
-export default ProductRoutes
