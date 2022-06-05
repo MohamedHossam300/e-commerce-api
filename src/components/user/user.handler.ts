@@ -19,7 +19,7 @@ const index = async (_req: Request, res: Response): Promise<void> => {
 
 const show = async (req: Request, res: Response): Promise<void> => {
     try {
-        const showUser = await store.show(req.params.id);
+        const showUser = await store.show(req.params.username);
         res.json(showUser);
     } catch (err) {
         res.status(400)
@@ -62,7 +62,7 @@ const authentication = async (req: Request, res: Response): Promise<void> => {
 
 const user_store = (app: Application) => {
     app.get("/users", userToken, index);
-    app.get("/users/:id", userToken, show);
+    app.get("/users/:username", userToken, show);
     app.post("/users", create);
     app.post("/auth", authentication);
 }

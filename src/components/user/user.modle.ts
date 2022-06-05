@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import {compareSync } from "bcrypt";
+import { Schema, model } from "mongoose";
+import { compareSync } from "bcrypt";
 import { config } from "../../config";
 
 export type User = {
@@ -11,7 +11,7 @@ export type User = {
   password: string;
 }
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   firstname: {
     type: String,
     required: true,
@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
+    unique: true,
     trim: true
   },
   email: {
@@ -40,7 +41,7 @@ const userSchema = new mongoose.Schema({
   },
 })
 
-const users = mongoose.model("User", userSchema)
+const users = model("User", userSchema)
 
 export class UserStore {
   async index(): Promise<User[]> {
@@ -52,9 +53,9 @@ export class UserStore {
     }
   }
 
-  async show(id: string): Promise<User> {
+  async show(username: string): Promise<User> {
     try {
-      const result = await users.findById(id)
+      const result = await users.findOne({}).where({username: username})
       return result;
     } catch (err) {
       throw new Error(`Unable to Show Users. Error: ${err}`)

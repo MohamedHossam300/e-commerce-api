@@ -23,7 +23,7 @@ app.get('/', (_req: Request, res: Response): void => {
 
 user_store(app)
 // app.use('/products' , ProductRoutes);
-// app.use('/orders' , OrderRoutes)
+app.use('/orders' , OrderRoutes)
 
 app.listen(port, (): void =>
   console.log(`your server is running at http://localhost:${port}`)
