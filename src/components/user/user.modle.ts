@@ -6,7 +6,6 @@ export type User = {
   id?: Number;
   firstname: string;
   lastname: string;
-  username: string;
   email: string;
   password: string;
 }
@@ -22,17 +21,12 @@ const userSchema = new Schema({
     required: true,
     trim: true
   },
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true
-  },
   email: {
     type: String,
     required: true,
     lowercase: true,
-    trim: true
+    trim: true,
+    unique:true
   },
   password: {
     type: String,
@@ -49,16 +43,16 @@ export class UserStore {
       const result = await users.find({})
       return result;
     } catch (err) {
-      throw new Error(`Unable to index Users. Error: ${err}`)
+      throw new Error(`Unable to display Users. Error: ${err}`)
     }
   }
 
-  async show(username: string): Promise<User> {
+  async show(email: string): Promise<User> {
     try {
-      const result = await users.findOne({}).where({username: username})
+      const result = await users.findOne({}).where({username: email})
       return result;
     } catch (err) {
-      throw new Error(`Unable to Show Users. Error: ${err}`)
+      throw new Error(`Unable to display User. Error: ${err}`)
     }
   }
 
@@ -68,7 +62,7 @@ export class UserStore {
       const result = await createUsers.save()
       return result;
     } catch (err) {
-      throw new Error(`Unable to index Users. Error: ${err}`)
+      throw new Error(`Unable to create User. Error: ${err}`)
     }
   }
 

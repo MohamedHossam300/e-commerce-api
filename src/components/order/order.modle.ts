@@ -68,7 +68,7 @@ export class OrderStore {
       const result = await order.findOneAndUpdate(id, o, { returnOriginal: false })
       return result;
     } catch (err) {
-        throw new Error(`unable to Update the order. Error: ${ err }`)
+        throw new Error(`unable to Update the order. Error: ${err}`)
     }
   }
 

@@ -1,4 +1,4 @@
-import { Application, Request, Response } from 'express'
+import { Request, Response, Application } from 'express'
 import { OrderStore, Order } from './order.modle'
 import userToken from '../../middlewares/userToken'
 
@@ -80,12 +80,12 @@ const deleteOrder = async (req: Request, res: Response) => {
 
 //order routes
 
-const order_routes = (app: Application) => { 
-    app.get('/orders', userToken, index)
-    app.get('/orders/:id', userToken, getOrder)
-    app.post('/orders', userToken, createNewOrder)
-    app.put('/orders', userToken, updateOrder)
-    app.delete('/orders/:id', userToken, deleteOrder)
+const order_routes = (app: Application) => {
+app.get('/', userToken, index)
+app.get('/:id', userToken, getOrder)
+app.post('/', userToken, createNewOrder)
+app.put('/', userToken, updateOrder)
+app.delete('/:id', userToken, deleteOrder)
 }
 
 export default order_routes

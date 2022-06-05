@@ -43,7 +43,7 @@ const createNewProduct = async (req: Request, res: Response) => {
             desc : req.body.desc,
             color: req.body.color,
             size : req.body.size,
-            price: parseInt(req.body.price),
+            price: req.body.price,
             category:req.body.category
 
         }
@@ -56,26 +56,32 @@ const createNewProduct = async (req: Request, res: Response) => {
     }
 }
 
-//delete product by id handler function
-const deleteProduct = async (req: Request, res: Response) => {
-    try {
-        const name = req.params.name
-        const product = await store.delete(name);
-        res.json(product);
-    } catch(err) { 
-        res.status(400)
-        res.json(err)
+ //delete product by id handler function
+ const deleteProduct = async (req: Request, res: Response) => {
+        try {
+            const name = req.params.name
+            const product = await store.delete(name);
+            res.json(product);
+        } catch(err) { 
+            res.status(400)
+            res.json(err)
+      }
     }
-}
+    
 
-//product routes
 
-const product_routes = (app: Application) => {  
+    //product routes
+
+    const product_routes = (app: Application) => { 
+        
     app.get('/product', getAllProducts)
     app.get('/product/:name', getProduct)
     app.post('/product', createNewProduct)
     app.delete('/product/:name', deleteProduct)
-}
+
+    
+       
+    }
     
     export default product_routes;
 
