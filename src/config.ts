@@ -8,4 +8,6 @@ export const config = {
     pepper: process.env.PEPPER,
     bcryptPasswors: process.env.BCRYPT_PASSWORD,
     tokenSecret: process.env.TOKEN_SECRET,
+    paypalClientId: <string>process.env.PAYPAL_CLIENT_ID,
+    paypalClientSecret: <string>process.env.PAYPAL_CLIENT_SECRET,
 };

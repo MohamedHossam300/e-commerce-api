@@ -4,6 +4,7 @@ import user_routes from './components/user/user.handler';
 import mongoose from "mongoose";
 import { config } from './config';
 import order_routes from './components/order/order.handler';
+import pay_with_paypal from './payment/paypal';
 
 const app: Application = express();
 const port: number = 8080
@@ -25,6 +26,7 @@ app.get('/', (_req: Request, res: Response): void => {
 user_routes(app)
 product_routes(app)
 order_routes(app)
+pay_with_paypal(app, 25.00)
 
 app.listen(port, (): void =>
   console.log(`your server is running at http://localhost:${port}`)

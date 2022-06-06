@@ -1,7 +1,7 @@
 import express, {Application,Request ,Response} from 'express'
 import {Router} from 'express'
 import { config } from "../../config";
-//import userToken from '../../middlewares/userToken'
+import userToken from '../../middlewares/userToken'
 import UserRoutes from '../user/user.handler'
 import {Product,TheProductStore} from './product.modle'
 
@@ -73,8 +73,8 @@ const deleteProduct = async (req: Request, res: Response) => {
 const product_routes = (app: Application) => {  
     app.get('/product', getAllProducts)
     app.get('/product/:name', getProduct)
-    app.post('/product', createNewProduct)
-    app.delete('/product/:name', deleteProduct)
+    app.post('/product', userToken, createNewProduct)
+    app.delete('/product/:name', userToken, deleteProduct)
 }
     
     export default product_routes;
