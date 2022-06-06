@@ -81,4 +81,4 @@ const pay_with_paypal = (app: Application, total: number): void => {
     })
 }
 
-e
+export default pay_with_paypal;
