@@ -1,6 +1,7 @@
 import { Application, Request, Response } from 'express'
 import { OrderStore, Order } from './order.modle'
 import userToken from '../../middlewares/userToken'
+import adminToken from '../../middlewares/adminToken'
 
 const store = new OrderStore()
 
@@ -81,7 +82,7 @@ const deleteOrder = async (req: Request, res: Response) => {
 //order routes
 
 const order_routes = (app: Application) => { 
-    app.get('/orders', userToken, index)
+    app.get('/orders', [userToken, adminToken], index)
     app.get('/orders/:id', userToken, getOrder)
     app.post('/orders', userToken, createNewOrder)
     app.put('/orders', userToken, updateOrder)
