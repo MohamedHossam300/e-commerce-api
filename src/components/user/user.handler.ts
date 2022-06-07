@@ -20,7 +20,7 @@ const index = async (_req: Request, res: Response): Promise<void> => {
 
 const show = async (req: Request, res: Response): Promise<void> => {
     try {
-        const showUser = await store.show(req.params.username);
+        const showUser = await store.show(req.params.id);
         res.json(showUser);
     } catch (err) {
         res.status(400)
@@ -33,8 +33,6 @@ const create = async (req: Request, res: Response): Promise<void> => {
         const salt = await genSalt(parseInt(config.saltRounds))
         const hash = hashSync(req.body.password + config.pepper, salt)
         const users: User = {
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
             username: req.body.username,
             email: req.body.email,
             password: hash,
@@ -58,8 +56,6 @@ const updateUser = async (req: Request, res: Response) => {
         const salt = await genSalt(parseInt(config.saltRounds))
         const hash = hashSync(req.body.password + config.pepper, salt)
         const users: User = {
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
             username: req.body.username,
             email: req.body.email,
             password: hash,
@@ -96,7 +92,7 @@ const authentication = async (req: Request, res: Response): Promise<void> => {
 
 const user_store = (app: Application) => {
     app.get("/users", [userToken, adminToken], index);
-    app.get("/users/:username", [userToken, adminToken], show);
+    app.get("/users/:id", [userToken, adminToken], show);
     app.post("/users", create);
     app.put("/users/:id", userToken, updateUser);
     app.delete("/users/:id", [userToken, adminToken], deleteUser);

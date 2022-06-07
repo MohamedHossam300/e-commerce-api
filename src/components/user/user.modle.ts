@@ -4,28 +4,13 @@ import { config } from "../../config";
 
 export type User = {
   id?: Number;
-  firstname: string;
-  lastname: string;
   username: string;
   email: string;
   password: string;
   isAdmin: boolean;
 }
 
-// `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VycyI6eyJmaXJzdG5hbWUiOiJNb2hhbWVkIiwibGFzdG5hbWUiOiJIb3NzYW0iLCJ1c2VybmFtZSI6Ik1vaGFtZWRIb3NzYW0iLCJlbWFpbCI6Im1vaGFtZWRob3NzYW1AeWFob28uY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkUExRdU45ZzRlUHNjazMwQ1I3NHBydUtLUXBzMzVPNThWb2J2em1ZWUhSeEs3Y1dhWFZVdC4iLCJpc0FkbWluIjp0cnVlLCJfaWQiOiI2MjlmNjlmYWVkMjBlZGZkZDdjMmU3ZTAiLCJfX3YiOjB9LCJpYXQiOjE2NTQ2MTQ1MjJ9.a7k6MUt9A8eLjZTg7AeniA_1q2tjQ4k28xUd6NHmrzA`
-// `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VycyI6eyJmaXJzdG5hbWUiOiJNb2hhbWVkIiwibGFzdG5hbWUiOiJIb3NzYW0iLCJ1c2VybmFtZSI6Ik1vaGFtZWRIb3NzYW0iLCJlbWFpbCI6Im1vaGFtZWRob3NzYW1AeWFob28uY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkbDBPUGJ2eWtzSlhBdHUvQUlRRkh4TzhWaG9MUlVWT3lTNGdvTm5id1ZUN2VZN0hEYVJTdzYiLCJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNjI5ZjZhMTljMWJkZWZiNzZkMWMzODJjIiwiX192IjowfSwiaWF0IjoxNjU0NjE0NTUzfQ.oTqaCxKLQGaC-e9I5UPlZS8WOzFOgbuIippqM49abhA`
-
 const userSchema = new Schema({
-  firstname: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  lastname: {
-    type: String,
-    required: true,
-    trim: true
-  },
   username: {
     type: String,
     required: true,
@@ -60,9 +45,9 @@ export class UserStore {
     }
   }
 
-  async show(username: string): Promise<User> {
+  async show(id: string): Promise<User> {
     try {
-      const result = await users.findOne({}).where({username: username})
+      const result = await users.findById(id)
       return result;
     } catch (err) {
       throw new Error(`Unable to Show Users. Error: ${err}`)
