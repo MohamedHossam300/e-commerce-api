@@ -1,83 +1,55 @@
 import { Application, Request, Response } from "express";
-import paypal from "paypal-rest-sdk"
+import paypal from "@paypal/checkout-server-sdk"
 import { config } from "../config";
 
-paypal.configure({
-    'mode': 'sandbox',
-    'client_id': config.paypalClientId,
-    'client_secret': config.paypalClientSecret
-});
+const Environment = paypal.core.SandboxEnvironment
+const paypalClient = new paypal.core.PayPalHttpClient(
+    new Environment(
+        config.paypalClientId,
+        config.paypalClientSecret
+    ))
 
-const pay_with_paypal = (app: Application, total: number): void => {
-    app.post("/pay_with_paypal", (_req: Request, res: Response): void => {
-        const create_payment_json = {
-            "intent": "sale",
-            "payer": {
-                "payment_method": "paypal"
-            },
-            "redirect_urls": {
-                "return_url": "http://localhost:8080/success",
-                "cancel_url": "http://localhost:8080/cancel"
-            },
-            "transactions": [{
-                "item_list": {
-                    "items": [{
-                        "name": "Iphone 13 Pro Max",
-                        "sku": "001",
-                        "price": "25.00",
-                        "currency": "USD",
-                        "quantity": 1
-                    }]
-                },
-                "amount": {
-                    "currency": "USD",
-                    "total": "25.00"
-                },
-                "description": "This is the payment description."
-            }]
-        };
+const storeItems = new Map([
+    [1, { price: 40000, name: "Iphone 13 pro max" }],
+    [2, { price: 800000, name: "Mac Book Pro" }]
+])
 
-        paypal.payment.create(create_payment_json, (error, payment): void => {
-            if (error) {
-                throw error;
-            } else if (payment.links !== undefined) {
-                for (let i = 0; i < payment.links.length; i++) {
-                    if (payment.links[i].rel === "approval_url") {
-                        res.redirect(payment.links[i].href)
-                    }
+const pay_with_paypal = async(app: Application): Promise<void> => {
+    app.post("/pay_with_paypal", (req: Request, res: Response): void => {
+        const request = new paypal.orders.OrdersCreateRequest()
+        const total = req.body.items.reduce((sum: any, items: any) => {
+            return sum + storeItems.get(items.id)!.price * items.quantity
+        }, 0)
+        request.prefer("return=representation")
+         request.requestBody({
+            intent: "CAPTURE",
+            purchase_units: [
+                {
+                    amount: {
+                        currency_code: "USD",
+                        value: total,
+                    },
+                    items: req.body.items.map((item: any) => {
+                        const storeItem = storeItems.get(item.id)
+                        return {
+                            name: storeItem?.name,
+                            unit_amount: {
+                                currency_code: "USD",
+                                value: storeItem?.price
+                            },
+                            quantity: item.quantity
+                        }
+                    })
                 }
-            }
-        });
-    })
-    
-    app.get("/success", (req: Request, res: Response): void => {
-        const payerId = <string>req.query.payerId;
-        const paymentId = <string>req.query.paymentId;
-
-        const execute_payment_json = {
-            "payer_id": payerId,
-            "transactions": [{
-                "amount": {
-                    "currency": "USD",
-                    "total": `${ total }`
-                }
-            }]
-        }
-
-        paypal.payment.execute(paymentId, execute_payment_json, (error, payment) => {
-            if (error) {
-                console.log(error.response)
-                throw error
-            } else {
-                console.log("Get Payment Response")
-                res.json(payment)
-                res.json("Success")
-            }
+            ],
         })
-    })
 
-    app.get("/cancel", (_req: Request, res: Response): void => {
-        res.json("Cancelled")
+        try {
+            const order = paypalClient.execute(request)
+            console.log(order)
+        } catch (err) {
+            res.status(500).json(err)
+        }
     })
 }
 

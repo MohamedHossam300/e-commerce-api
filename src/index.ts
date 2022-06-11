@@ -26,7 +26,7 @@ app.get('/', (_req: Request, res: Response): void => {
 user_routes(app)
 product_routes(app)
 order_routes(app)
-pay_with_paypal(app, 25.00)
+pay_with_paypal(app)
 
 app.listen(port, (): void =>
   console.log(`your server is running at http://localhost:${port}`)

@@ -10,4 +10,6 @@ export const config = {
     tokenSecret: process.env.TOKEN_SECRET,
     paypalClientId: <string>process.env.PAYPAL_CLIENT_ID,
     paypalClientSecret: <string>process.env.PAYPAL_CLIENT_SECRET,
+    stripeSecretKey: <string>process.env.STRIPE_SECRET_KEY,
+    stripePublicKey: <string>process.env.STRIPE_PUBLIC_KEY,
 };
