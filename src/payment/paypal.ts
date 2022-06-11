@@ -2,7 +2,7 @@ import { Application, Request, Response } from "express";
 import paypal from "@paypal/checkout-server-sdk"
 import { config } from "../config";
 
-const Environment = paypal.core.SandboxEnvironment
+const Environment = paypal.core.LiveEnvironment
 const paypalClient = new paypal.core.PayPalHttpClient(
     new Environment(
         config.paypalClientId,
